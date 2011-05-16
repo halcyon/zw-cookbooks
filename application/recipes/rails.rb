@@ -202,6 +202,7 @@ deploy_revision app['id'] do
         app['rake']['before_migrate'].each do |task|
           execute "rake #{task}" do
             cwd release_path
+            environment 
           end
         end
       end
@@ -225,6 +226,14 @@ deploy_revision app['id'] do
         if node.role?("#{app['id']}_run_migrations")
           Chef::Log.info("Migrations were run, removing role[#{app['id']}_run_migrations]")
           node.run_list.remove("role[#{app['id']}_run_migrations]")
+        end
+      end
+    end
+    if app.has_key?('rake')
+      app['rake']['after_migrate'].each do |task|
+        execute "rake #{task}" do
+          cwd release_path
+          environment 'REDMINE_LANG' => 'en', 'RAILS_ENV' => node.app_environment
         end
       end
     end
