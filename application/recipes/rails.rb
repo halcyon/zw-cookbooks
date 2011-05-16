@@ -202,7 +202,6 @@ deploy_revision app['id'] do
         app['rake']['before_migrate'].each do |task|
           execute "rake #{task}" do
             cwd release_path
-            environment 
           end
         end
       end
