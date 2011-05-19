@@ -9,9 +9,6 @@
 
 ruby_string = node[:rvm][:ruby_string]
 
-#execute "for i in `ls /usr/local/rvm/gems/#{rubystring}/bin` ; do rvm wrapper #{rubystring} --no-prefix $i ; done"
-#execute "for i in `ls /usr/local/rvm/gems/#{rubystring}/bin` ; do ln -sf /usr/local/rvm/bin/$i /usr/bin/$i ; done"
-
 ruby_block "create rvm gem wrappers" do
   block do
     Dir.glob("/usr/local/rvm/gems/#{ruby_string}/bin/*").each do |file_path|
