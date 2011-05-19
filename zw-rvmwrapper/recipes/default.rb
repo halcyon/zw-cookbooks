@@ -26,18 +26,3 @@ ruby_block "create rvm gem wrappers" do
   end
   action :create
 end
-
-server_services = %w{ chef-solr chef-expander chef-server }
-
-if node['chef_server']['webui_enabled']
-  server_services << "chef-server-webui"
-end
-
-server_services.each do |svc|
-  service "#{svc}" do
-    supports :status => true
-    action :enable
-  end
-end
-
-
