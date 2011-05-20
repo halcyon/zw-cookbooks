@@ -225,6 +225,13 @@ when "init"
     end
   end
 
+  #chef-server-webui seems to have issues starting the first time on RHEL
+  if node['chef_server']['webui_enabled']
+    service "chef-server-webui" do
+     action :restart
+    end
+  end
+
 when "upstart"
 
   log "This recipe does not yet support configuring services with Upstart."
