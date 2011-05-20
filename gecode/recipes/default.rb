@@ -47,7 +47,6 @@ if deb_exists
   end
 
 elsif rpm_exists
-  include_recipe 'aegisco'
 
   package "gecode-devel" do
     action :install

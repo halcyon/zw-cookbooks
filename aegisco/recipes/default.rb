@@ -7,8 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 
-include_recipe "yum"
-
 case node['platform']
 when "redhat"
   yum_key "RPM-GPG-KEY-aegisco" do
