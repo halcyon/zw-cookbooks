@@ -226,9 +226,11 @@ when "init"
   end
 
   #chef-server-webui seems to have issues starting the first time on RHEL
-  if node['chef_server']['webui_enabled']
-    service "chef-server-webui" do
-     action :restart
+  if node['platform']['redhat']
+    if node['chef_server']['webui_enabled']
+      service "chef-server-webui" do
+      action :restart
+      end
     end
   end
 
