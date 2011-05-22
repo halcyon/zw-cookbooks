@@ -18,6 +18,11 @@ if node['platform']['redhat']
     action :add
   end
 
+  yum_key "RPM-GPG-KEY-EPEL" do
+    url "http://mirror.pnl.gov/epel/RPM-GPG-KEY-EPEL"
+    action :add
+  end
+
   yum_repository "el5_ga_base" do
     description "el5_ga_base"
     name "Enterprise Linux $releasever GA - $basearch - base"
@@ -56,6 +61,13 @@ if node['platform']['redhat']
     url "http://public-yum.oracle.com/repo/EnterpriseLinux/EL5/oracle_addons/$basearch/"
     key "RPM-GPG-KEY-oracle-el5"
     action :add
+  end
+
+  yum_repository "epel" do
+    description "epel"
+    url "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-5&arch=$basearch"
+    mirrorlist true
+    key "RPM-GPG-KEY-EPEL"
   end
 
 end
