@@ -26,6 +26,7 @@ if node['platform']['redhat']
     name "Enterprise Linux $releasever GA - $basearch - base"
     url "http://public-yum.oracle.com/repo/EnterpriseLinux/EL5/0/base/$basearch/"
     key "RPM-GPG-KEY-oracle-el5"
+    action :add
   end
 
   yum_repository "el5_u5_base" do
@@ -33,6 +34,7 @@ if node['platform']['redhat']
     name "Enterprise Linux $releasever U5 - $basearch - base"
     url "http://public-yum.oracle.com/repo/EnterpriseLinux/EL5/5/base/$basearch/"
     key "RPM-GPG-KEY-oracle-el5"
+    action :add
   end
 
   yum_repository "ol5_u5_base" do
@@ -40,6 +42,7 @@ if node['platform']['redhat']
     name "Oracle Linux $releasever - U5 - x86_64 - base"
     url "http://public-yum.oracle.com/repo/OracleLinux/OL5/5/base/x86_64/"
     key "RPM-GPG-KEY-oracle-el5"
+    action :add
   end
 
   yum_repository "el5_addons" do
@@ -47,6 +50,7 @@ if node['platform']['redhat']
     name "Enterprise Linux $releasever - $basearch - addons"
     url "http://public-yum.oracle.com/repo/EnterpriseLinux/EL5/addons/$basearch/"
     key "RPM-GPG-KEY-oracle-el5"
+    action :add
   end
 
   yum_repository "el5_oracle_addons" do
@@ -54,6 +58,7 @@ if node['platform']['redhat']
     name "Enterprise Linux $releasever - $basearch - oracle_addons"
     url "http://public-yum.oracle.com/repo/EnterpriseLinux/EL5/oracle_addons/$basearch/"
     key "RPM-GPG-KEY-oracle-el5"
+    action :add
   end
 
   yum_repository "epel" do
@@ -61,6 +66,7 @@ if node['platform']['redhat']
     url "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-5&arch=$basearch"
     mirrorlist true
     key "RPM-GPG-KEY-EPEL"
+    action :add
   end
 
 end
