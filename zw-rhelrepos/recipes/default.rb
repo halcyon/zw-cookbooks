@@ -9,10 +9,6 @@
 
 if node['platform']['redhat']
 
-  file "/etc/yum.repos.d/cobbler-config.repo" do
-    action :delete
-  end
-
   yum_key "RPM-GPG-KEY-oracle-el5" do
     url "http://public-yum.oracle.com/RPM-GPG-KEY-oracle-el5"
     action :add

@@ -17,4 +17,8 @@
 # limitations under the License.
 #
 
+file "/etc/yum.repos.d/cobbler-config.repo" do
+  action :delete
+end
+
 execute "yum update -y"
