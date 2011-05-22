@@ -66,4 +66,8 @@ if node['platform']['redhat']
     action :add
   end
 
+  execute "update yum repos" do
+    command "yum check-update"
+  end
+
 end
