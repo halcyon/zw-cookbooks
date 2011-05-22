@@ -15,10 +15,12 @@ if node['platform']['redhat']
 
   yum_key "RPM-GPG-KEY-oracle-el5" do
     url "http://public-yum.oracle.com/RPM-GPG-KEY-oracle-el5"
+    action :add
   end
 
   yum_key "RPM-GPG-KEY-EPEL" do
     url "http://mirror.pnl.gov/epel/RPM-GPG-KEY-EPEL"
+    action :add
   end
 
   yum_repository "el5_ga_base" do
