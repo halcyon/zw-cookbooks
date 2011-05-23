@@ -10,3 +10,5 @@
 gem_package "mysql" do
   action :install
 end
+
+system "gem update --system 1.4.2"
