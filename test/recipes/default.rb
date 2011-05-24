@@ -7,19 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-rvm_wrapper "monkeynews" do
-  ruby_string "ree-1.8.7-2011.03"
-  action :create
-  provider "rvm_wrapper"
-end
-
-rvm_wrapper "monkeynews" do
-  ruby_string "ree-1.8.7-2011.03"
-  action :create
-  provider "rvm_wrapper"
-end
-
-rvm_wrapper "monkeynews" do
+rvm_wrapper "create rvm wrappers" do
   ruby_string "ree-1.8.7-2011.03"
   action :create
   provider "rvm_wrapper"
