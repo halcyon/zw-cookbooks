@@ -13,8 +13,8 @@ end
 
 system "gem update --system 1.4.2"
 
-rvm_wrapper "create rvm wrappers" do
+zw-rvm_wrapper "update rvm wrappers" do
   ruby_string "ree-1.8.7-2011.03"
   action :create
-  provider "rvm_wrapper"
+  provider "zw-rvm_wrapper"
 end
