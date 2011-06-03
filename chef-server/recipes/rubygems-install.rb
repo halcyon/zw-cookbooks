@@ -91,7 +91,11 @@ server_gems.each do |gem|
   end
 end
 
-include_recipe "zw-rvmwrapper"
+zw-rvm_wrapper "update rvm wrappers" do
+  ruby_string "ree-1.8.7-2011.03"
+  action :create
+  provider "zw-rvm_wrapper"
+end
 
 chef_dirs = [
   node['chef_server']['log_dir'],
