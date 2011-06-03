@@ -24,8 +24,11 @@ applications.
 
 # Example
 
-  zw-rvm_wrapper "update rvm wrappers" do
-    ruby_string "ree-1.8.7-2011.03"
-    action :create
-    provider "zw-rvm_wrapper"
-  end
+    zw-rvm_wrapper "update rvm wrappers" do
+      ruby_string "ree-1.8.7-2011.03"
+      action :create
+      provider "zw-rvm_wrapper"
+    end
+
+Usage
+=====
