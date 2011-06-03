@@ -43,6 +43,15 @@ when "ubuntu"
   end
 
   include_recipe "java"
+
+
+  apt_repository "rabbitmq" do
+    uri "http://www.rabbitmq.com/debian"
+    components ["testing","main"]
+    key "http://www.rabbitmq.com/rabbitmq-signing-key-public.asc"
+    action :add
+  end
+
   include_recipe "chef-server::rabbitmq"
   include_recipe "gecode"
 
@@ -91,10 +100,10 @@ server_gems.each do |gem|
   end
 end
 
-zw-rvm_wrapper "update rvm wrappers" do
+zw_rvm_wrapper "update rvm wrappers" do
   ruby_string "ree-1.8.7-2011.03"
   action :create
-  provider "zw-rvm_wrapper"
+  provider "zw_rvm_wrapper"
 end
 
 chef_dirs = [
