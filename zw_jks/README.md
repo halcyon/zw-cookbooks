@@ -26,6 +26,7 @@ Usage
 Create a data bag - in this case example data bag "zw" has been created with item "ca"
 
 The contents of the "ca" item are as follows:
+
 ```json
 {
   "id": "ca",
@@ -38,6 +39,7 @@ The contents of the "ca" item are as follows:
 ```
 
 The "ca" item is loaded from the "zw" data bag
+
 ```ruby
 ca = data_bag_item('zw','ca')
 
