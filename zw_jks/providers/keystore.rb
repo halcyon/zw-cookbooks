@@ -55,33 +55,41 @@ action :create do
 
 
       def gen_keypair()
-        keypair_cmd = "keytool -keypass #{STORE_PASS} -alias #{CN_ALIAS} \
-                  -keyalg rsa -genkeypair -dname \"#{SUBJECT}\" -keystore keystore.jks -storepass #{STORE_PASS}"
-        popen3(keypair_cmd,{:silent => true})
-      end
-
-
-      def add_default_certs()
-        list_keys_cmd = "keytool -list -storepass changeit -keystore \
-                        #{ENV['JAVA_HOME']}/jre/lib/security/cacerts | \
-                        tail -n +7 | grep -v '^Certificate fingerprint' | \
-                        awk -F, '{print $1}'"
-
-
-        xfer_cert_cmd = 'keytool -export -alias #{cert} -storepass changeit \
-                        -keystore #{ENV[\'JAVA_HOME\']}/jre/lib/security/cacerts | \
-                        keytool -import -alias #{cert} -trustcacerts -noprompt \
-                        -storepass #{STORE_PASS} -keystore keystore.jks'
-
-        out, err = popen3(list_keys_cmd,{:silent => true})
-
-        cert_names = out.split("\n")
-        cert_names.each do |cert|
-          popen3(eval("\"#{xfer_cert_cmd}\""),{:silent => true})
+        if not ::File::exists? "/keystore.jks"
+          puts "Making the keystore"
+          keypair_cmd = "keytool -keypass #{STORE_PASS} -alias #{CN_ALIAS} \
+                    -keyalg rsa -genkeypair -dname \"#{SUBJECT}\" -keystore keystore.jks -storepass #{STORE_PASS}"
+          popen3(keypair_cmd,{:silent => true})
         end
       end
 
 
+      def add_default_certs()
+        list_src_keys_cmd = "keytool -list -storepass changeit -keystore \
+                             #{ENV['JAVA_HOME']}/jre/lib/security/cacerts | \
+                             tail -n +7 | grep -v '^Certificate fingerprint' | \
+                             awk -F, '{print $1}'"
+
+        list_dest_keys_cmd = "keytool -list -storepass #{STORE_PASS} -keystore \
+                              /keystore.jks | \
+                              tail -n +7 | grep -v '^Certificate fingerprint' | \
+                              awk -F, '{print $1}'"
+
+
+        xfer_cert_cmd = 'keytool -export -alias #{cert} -storepass changeit \
+                         -keystore #{ENV[\'JAVA_HOME\']}/jre/lib/security/cacerts | \
+                         keytool -import -alias #{cert} -trustcacerts -noprompt \
+                         -storepass #{STORE_PASS} -keystore keystore.jks'
+
+        src_cert_names = popen3(list_src_keys_cmd,:silent => true)[0].split("\n")
+        dest_cert_names = popen3(list_dest_keys_cmd, :silent => true)[0].split("\n")
+        src_cert_names.each do |cert|
+          if dest_cert_names.include? cert
+          else
+            popen3(eval("\"#{xfer_cert_cmd}\""),{:silent => true})
+          end
+        end
+      end
 
       def add_ca_cert()
         import_ca_cert ='keytool -import -alias #{uri.host.split(\'.\')[0]} \
