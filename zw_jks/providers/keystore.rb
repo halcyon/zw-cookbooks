@@ -102,20 +102,16 @@ action :create do
       end
 
       def add_ca_cert()
-        list_dest_keys_cmd = "keytool -list -storepass #{STORE_PASS} -keystore \
-                              /keystore.jks | \
-                              tail -n +7 | grep -v '^Certificate fingerprint' | \
-                              awk -F, '{print $1}'"
-
         import_ca_cert ='keytool -import -alias #{uri.host.split(\'.\')[0]} \
                         -trustcacerts -noprompt -storepass #{STORE_PASS} \
                         -keystore keystore.jks'
 
-        dest_cert_names = popen3(list_dest_keys_cmd, :stderr => true)[0].split("\n")
-
         uri = URI.parse(CA_URL)
 
-        if ! dest_cert_names.include? uri.host.split('.')[0]
+        list_ca_alias_cmd = "keytool -list -alias #{uri.host.split('.')[0]} \ -storepass #{STORE_PASS} -keystore /keystore.jks > /dev/null 2>&1"
+
+        system(list_ca_alias_cmd)
+        if $?.to_s != "0"
           http=Net::HTTP.new(uri.host,uri.port)
           http.use_ssl = true
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE
