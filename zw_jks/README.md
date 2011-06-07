@@ -41,7 +41,7 @@ The contents of the "ca" item are as follows:
 The "ca" item is loaded from the "zw" data bag
 
 ```ruby
-ca = data_bag_item('zw','ca')
+ca = Chef::EncryptedDataBagItem.load("zw", "ca")
 
 zw_jks_keystore "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA, C=US" do
   cn_alias "example"
