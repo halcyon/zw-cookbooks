@@ -20,6 +20,7 @@ Attributes
 * store_pass: Password to be set on the newly created keystore e.g. "changeit"
 * user_agent: Identification String used to convince Active Directory
   Certificate Services that the provider is a web browser e.g. for IE9 "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)"
+* jks_path: Fully qualified path and name of the JKS file to be created or modified
 
 Usage
 =====
@@ -50,6 +51,7 @@ zw_jks_keystore "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA
   ca_pass ca['ca_pass']
   store_pass ca['store_pass']
   user_agent ca['user_agent']
+  jks_path "/srv"
   action :create
   provider "zw_jks_keystore"
 end

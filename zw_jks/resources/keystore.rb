@@ -7,3 +7,4 @@ attribute :ca_user, :kind_of => String
 attribute :ca_pass, :kind_of => String
 attribute :store_pass, :kind_of => String
 attribute :user_agent, :kind_of => String
+attribute :jks_path, :kind_of => String
