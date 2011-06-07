@@ -51,7 +51,7 @@ zw_jks_keystore "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA
   ca_pass ca['ca_pass']
   store_pass ca['store_pass']
   user_agent ca['user_agent']
-  jks_path "/srv"
+  jks_path "/srv/keystore.jks"
   action :create
   provider "zw_jks_keystore"
 end
