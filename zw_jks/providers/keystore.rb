@@ -32,11 +32,13 @@ action :create do
           @out=stdout.read
           @err=stderr.read
           if options[:silent] != true then
-            if ! @out.empty? then
-              puts @out
+            if options[:stderr] != true then
+              if ! @out.empty? then
+                puts "stdout: #{@out}"
+              end
             end
             if ! @err.empty? then
-              puts @err
+              puts "stderr: #{@err}"
             end
           end
         end
@@ -56,10 +58,9 @@ action :create do
 
       def gen_keypair()
         if not ::File::exists? "/keystore.jks"
-          puts "Making the keystore"
           keypair_cmd = "keytool -keypass #{STORE_PASS} -alias #{CN_ALIAS} \
                     -keyalg rsa -genkeypair -dname \"#{SUBJECT}\" -keystore keystore.jks -storepass #{STORE_PASS}"
-          popen3(keypair_cmd,{:silent => true})
+          popen3(keypair_cmd,{:stderr => true})
         end
       end
 
@@ -81,36 +82,46 @@ action :create do
                          keytool -import -alias #{cert} -trustcacerts -noprompt \
                          -storepass #{STORE_PASS} -keystore keystore.jks'
 
-        src_cert_names = popen3(list_src_keys_cmd,:silent => true)[0].split("\n")
-        dest_cert_names = popen3(list_dest_keys_cmd, :silent => true)[0].split("\n")
+        src_cert_names = popen3(list_src_keys_cmd,:stderr => true)[0].split("\n")
+        dest_cert_names = popen3(list_dest_keys_cmd, :stderr => true)[0].split("\n")
         src_cert_names.each do |cert|
           if dest_cert_names.include? cert
           else
-            popen3(eval("\"#{xfer_cert_cmd}\""),{:silent => true})
+            popen3(eval("\"#{xfer_cert_cmd}\""),{:stderr => true})
           end
         end
       end
 
       def add_ca_cert()
+        list_dest_keys_cmd = "keytool -list -storepass #{STORE_PASS} -keystore \
+                              /keystore.jks | \
+                              tail -n +7 | grep -v '^Certificate fingerprint' | \
+                              awk -F, '{print $1}'"
+
         import_ca_cert ='keytool -import -alias #{uri.host.split(\'.\')[0]} \
                         -trustcacerts -noprompt -storepass #{STORE_PASS} \
                         -keystore keystore.jks'
 
-        uri = URI.parse(CA_URL)
-        http=Net::HTTP.new(uri.host,uri.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        dest_cert_names = popen3(list_dest_keys_cmd, :stderr => true)[0].split("\n")
 
-        request = Net::HTTP::Get.new(uri.request_uri+"certnew.cer?ReqID=CACert&Renewal=0&Enc=b64", {"User-Agent" => USER_AGENT})
-        request.basic_auth CA_USER, CA_PASS
-        response = http.request(request)
-        cert=response.body
-        popen3(eval("\"#{import_ca_cert}\""),{:stdin => cert, :silent => true})
+        uri = URI.parse(CA_URL)
+
+        if ! dest_cert_names.include? uri.host.split('.')[0]
+          http=Net::HTTP.new(uri.host,uri.port)
+          http.use_ssl = true
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+          request = Net::HTTP::Get.new(uri.request_uri+"certnew.cer?ReqID=CACert&Renewal=0&Enc=b64", {"User-Agent" => USER_AGENT})
+          request.basic_auth CA_USER, CA_PASS
+          response = http.request(request)
+          cert=response.body
+          popen3(eval("\"#{import_ca_cert}\""),{:stdin => cert, :stderr => true})
+        end
       end
 
       def gen_csr()
         csr_cmd = "keytool -certreq -alias #{CN_ALIAS} -noprompt -storepass #{STORE_PASS} -keystore keystore.jks"
-        out, err = popen3(csr_cmd, {:silent => true})
+        out, err = popen3(csr_cmd, {:stderr => true})
         csr = out
         csr
       end
@@ -146,7 +157,7 @@ action :create do
 
       def import_cert(cert)
         import_cert = "keytool -import -alias #{CN_ALIAS} -noprompt -storepass #{STORE_PASS} -keystore keystore.jks"
-        popen3(import_cert,{:stdin => cert})
+        popen3(import_cert,{:stdin => cert, :stderr => true})
 
         #Create apache key
         file = ::File.new("server.key", "w")
