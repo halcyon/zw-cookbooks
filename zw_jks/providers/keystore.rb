@@ -57,10 +57,19 @@ action :create do
 
 
       def gen_keypair()
+        keypair_cmd = "keytool -keypass #{STORE_PASS} -alias #{CN_ALIAS} \
+                  -keyalg rsa -genkeypair -dname \"#{SUBJECT}\" -keystore keystore.jks -storepass #{STORE_PASS}"
+
+        list_cn_alias_cmd = "keytool -list -alias #{CN_ALIAS} \ -storepass #{STORE_PASS} -keystore /keystore.jks > /dev/null 2>&1"
+
+
         if not ::File::exists? "/keystore.jks"
-          keypair_cmd = "keytool -keypass #{STORE_PASS} -alias #{CN_ALIAS} \
-                    -keyalg rsa -genkeypair -dname \"#{SUBJECT}\" -keystore keystore.jks -storepass #{STORE_PASS}"
           popen3(keypair_cmd,{:stderr => true})
+        else
+          system(list_cn_alias_cmd)
+          if $?.to_s != "0"
+            popen3(keypair_cmd,{:stderr => true})
+          end
         end
       end
 
@@ -155,21 +164,34 @@ action :create do
       end
 
 
-      def import_cert(cert)
-        import_cert = "keytool -import -alias #{CN_ALIAS} -noprompt -storepass #{STORE_PASS} -keystore keystore.jks"
-        popen3(import_cert,{:stdin => cert, :stderr => true})
+      def import_cert()
+        list_cn_alias_cmd = "keytool -list -v -alias #{CN_ALIAS} \
+                             -storepass #{STORE_PASS} -keystore /keystore.jks"
 
-        #Create apache key
-        file = ::File.new("server.key", "w")
-        file.write(cert)
-        file.close
+        import_cert = "keytool -import -alias #{CN_ALIAS} -noprompt -storepass #{STORE_PASS} -keystore keystore.jks"
+
+        cn_alias_output = popen3(list_cn_alias_cmd, :stderr => true)[0].split("\n")
+
+        cn_alias_output.each do |line|
+          if ! line.scan(/Certificate chain length: ([0-9]*)/).empty?
+            if line.scan(/Certificate chain length: ([0-9]*)/)[0].to_s == "1"
+              cert = get_cert(sign_csr(gen_csr))
+              popen3(import_cert,:stdin => cert, :stderr => true)
+
+              #Create apache key
+              file = ::File.new("server.key", "w")
+              file.write(cert)
+              file.close
+            end
+          end
+        end
       end
 
       set_java_home
       gen_keypair
       add_default_certs
       add_ca_cert
-      import_cert(get_cert(sign_csr(gen_csr)))
+      import_cert
     end
     action :create
   end
