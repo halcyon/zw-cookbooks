@@ -19,53 +19,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# we have pre-built packages for the following platforms/versions
-deb_exists = (node['platform'] == 'ubuntu' && ["lucid", "maverick","natty"].include?(node['lsb']['codename'])) ||
-             (node['platform'] == 'debian' && node["lsb"]["codename"] == "lenny")
-
-rpm_exists = (node['platform'] == 'redhat')
-
-# we have tested building from source on the following platforms
-can_build_from_src = ['ubuntu', 'debian', 'centos'].include?(node['platform'])
-
-if deb_exists
-  include_recipe 'apt'
-
-  # add Opscode's apt repo to sources
-#  apt_repository "opscode" do
-#    uri "http://apt.opscode.com"
-#    components ["main"]
-#    distribution node['lsb']['codename']
-#    key "2940ABA983EF826A"
-#    keyserver "pgpkeys.mit.edu"
-#    action :add
-#    notifies :run, resources(:execute => "apt-get update"), :immediately
-#  end
-
-  apt_package 'libgecode-dev' do
-    action :install
-  end
-
-elsif rpm_exists
-
-  package "gecode-devel" do
-    action :install
-  end
-
-elsif can_build_from_src
-
-  include_recipe 'build-essential'
-
-  bash "build gecode from source" do
-    cwd "/tmp"
-    code <<-EOH
-    curl -C - -O  http://www.gecode.org/download/gecode-3.5.0.tar.gz
-    tar zxvf gecode-3.5.0.tar.gz
-    cd gecode-3.5.0 && ./configure
-    make && make install
-    EOH
-  end
-
-else
-  raise "This recipe does not yet support installing Gecode 3.5.0+ for your platform"
+package "gecode" do
+  package_name value_for_platform(
+    ["ubuntu", "debian"] => { "default" => "libgecode-dev" },
+    ["redhat"] => { "default" => "gecode-devel" }
+  )
 end
