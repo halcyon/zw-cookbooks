@@ -7,8 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 
-if node['platform']['redhat']
-
 #  yum_key "RPM-GPG-KEY-oracle-el5" do
 #    url "http://public-yum.oracle.com/RPM-GPG-KEY-oracle-el5"
 #    action :add
@@ -64,11 +62,11 @@ if node['platform']['redhat']
 
 #  execute "yum update -y"
 
-  yum_repository "epel-erlang"
+
+  yum_repository "epel-erlang" do
     description "epel-erlang"
-    url "baseurl=http://repos.fedorapeople.org/repos/peter/erlang/epel-$releasever/$basearch/"
+    url 'http://repos.fedorapeople.org/repos/peter/erlang/epel-$releasever/$basearch/'
     action :add
   end
 
 
-end
