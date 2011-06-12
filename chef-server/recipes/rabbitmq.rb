@@ -20,7 +20,15 @@
 # limitations under the License.
 #
 
-package "rabbitmq-server"
+case node[:platform]
+when "redhat"
+  execute "install rabbitmq-server rpm from URL" do
+    command "rpm -Uhv http://www.rabbitmq.com/releases/rabbitmq-server/v2.4.1/rabbitmq-server-2.4.1-1.noarch.rpm"
+    action :run
+  end
+else
+  package "rabbitmq-server"
+end
 
 service "rabbitmq-server" do
   if platform?("centos","redhat","fedora")
