@@ -23,6 +23,6 @@ when "redhat"
 end
 
 service "jenkins" do
-  suppots :restart => true, :reload => true, :status => true
+  supports :restart => true, :reload => true, :status => true
   action [ :enable, :start ]
 end
