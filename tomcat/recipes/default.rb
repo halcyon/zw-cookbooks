@@ -44,6 +44,7 @@ package "tomcat6"
 
 File "/var/log/tomcat6/catalina.out" do
   action :delete
+  not_if "/etc/init.d/tomcat6 status"
 end
 
 service "tomcat" do
