@@ -8,7 +8,7 @@
 #
 
 #ca = data_bag_item('zw','ca')
-ca = Chef::EncryptedDataBagItem.load("zw", "ca")
+ca = Chef::EncryptedDataBagItem.load("apps", "ca")
 
 zw_jks_keystore "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA, C=US" do
   cn_alias "example"
@@ -17,7 +17,7 @@ zw_jks_keystore "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA
   ca_pass ca["ca_pass"]
   store_pass ca["store_pass"]
   user_agent ca["user_agent"]
-  jks_path "/srv/keystore.jks"
+  jks_path "/var/lib/jenkins/keystore.jks"
   action :create
   provider "zw_jks_keystore"
 end
