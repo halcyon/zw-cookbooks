@@ -30,13 +30,14 @@ end
 jenkins = Chef::EncryptedDataBagItem.load("apps", "jenkins")
 
 
-template "/etc/default/jenkins.conf" do
+template "/etc/sysconfig/jenkins" do
   source "jenkins.erb"
   variables ({
     :httpsPort => jenkins["httpsPort"],
     :jks_path => jenkins["jks_path"],
     :store_pass => jenkins["store_pass"]
   })
+  notifies :restart, "service[jenkins]"
 end
 
 service "jenkins" do
