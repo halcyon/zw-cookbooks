@@ -28,7 +28,19 @@ when "debian"
 end
 
 jenkins = Chef::EncryptedDataBagItem.load("apps", "jenkins")
+ca = Chef::EncryptedDataBagItem.load("apps", "ca")
 
+zw_jks_keystore "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA, C=US" do
+  cn_alias "example"
+  ca_url ca["ca_url"]
+  ca_user ca["ca_user"]
+  ca_pass ca["ca_pass"]
+  store_pass ca["store_pass"]
+  user_agent ca["user_agent"]
+  jks_path jenkins["jks_path"]
+  action :create
+  provider "zw_jks_keystore"
+end
 
 template "/etc/sysconfig/jenkins" do
   source "jenkins.erb"
@@ -44,4 +56,3 @@ service "jenkins" do
   supports :restart => true, :reload => true, :status => true
   action [ :enable, :start ]
 end
-
