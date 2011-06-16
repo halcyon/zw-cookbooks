@@ -27,7 +27,20 @@ when "debian"
   end
 end
 
+jenkins = Chef::EncryptedDataBagItem.load("apps", "jenkins")
+
+
+template "/etc/default/jenkins.conf" do
+  source "jenkins.erb"
+  variables ({
+    :httpsPort => jenkins["httpsPort"],
+    :jks_path => jenkins["jks_path"],
+    :store_pass => jenkins["store_pass"]
+  })
+end
+
 service "jenkins" do
   supports :restart => true, :reload => true, :status => true
   action [ :enable, :start ]
 end
+
