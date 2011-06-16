@@ -16,7 +16,7 @@ action :create do
       require 'open3'
 
       SUBJECT = new_resource.subject
-      CN_ALIAS = new_resource.cn_alias
+      CN_ALIAS = SUBJECT.scan(/CN=([a-zA-Z0-9]+)/)[0].class.to_s
       CA_URL = new_resource.ca_url
       CA_USER = new_resource.ca_user
       CA_PASS = new_resource.ca_pass
