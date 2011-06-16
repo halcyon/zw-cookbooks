@@ -13,7 +13,6 @@ Attributes
 ==========
 
 * subject: X509 Certificate Subject e.g. "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA, C=US", defaults to name_attribute
-* cn_alias: Name of the key to be created for the Subject e.g. "example"
 * ca_url: Full URL to Microsoft Active Directory Certificate Services "https://example.example.com/certsrv/"
 * ca_user: User with access to Microsoft Active Directory Certificate Services
 * ca_pass: ca_user's password
@@ -39,13 +38,26 @@ The contents of the "ca" item are as follows:
 }
 ```
 
-The "ca" item is loaded from the "zw" data bag
+Create a data bag for your application - in this case the example data bag "apps" has been created with item "yourapp"
+
+The contents of the "yourapp" item are as follows:
+```json
+{
+  "httpsPort": "8443",
+  "ca_subject": "CN=www.fictitious-company.com, OU=Ficticious Engineering, O=Ficticious Company, L=Atlanta, ST=GA, C=US",
+  "id": "yourapp",
+  "store_pass": "ficitious_password",
+  "jks_path": "/var/lib/yourapp/keystore.jks"
+}
+
+Create the keystore in your recipe using the following:
 
 ```ruby
+yourapp = Chef::EncryptedDataBagItem.load("apps", "yourapp")
 ca = Chef::EncryptedDataBagItem.load("zw", "ca")
 
-zw_jks_keystore "CN=example.example.com, OU=Example, O=Example, L=Atlanta, ST=GA, C=US" do
-  cn_alias "example"
+zw_jks_keystore yourapp["ca_subject"] do
+  subject yourapp["ca_subject"]
   ca_url ca['ca_url']
   ca_user ca['ca_user']
   ca_pass ca['ca_pass']
