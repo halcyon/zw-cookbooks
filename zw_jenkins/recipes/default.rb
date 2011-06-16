@@ -20,6 +20,11 @@ when "redhat"
     command "yum upgrade"
     action :run
   end
+when "debian"
+  execute "Install Jenkins deb from URL" do
+    command "(wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -); echo 'deb http://pkg.jenkins-ci.org/debian binary/' > /etc/apt/sources.list.d/jenkins.list; aptitude update; aptitude -y install jenkins"
+    not_if "dpkg-query -s jenkins"
+  end
 end
 
 service "jenkins" do
