@@ -31,15 +31,12 @@ jenkins = Chef::EncryptedDataBagItem.load("apps", "jenkins")
 ca = Chef::EncryptedDataBagItem.load("apps", "ca")
 
 zw_jks_keystore jenkins["ca_subject"] do
-  subject jenkins["ca_subject"]
   ca_url ca["ca_url"]
   ca_user ca["ca_user"]
   ca_pass ca["ca_pass"]
   store_pass ca["store_pass"]
   user_agent ca["user_agent"]
   jks_path jenkins["jks_path"]
-  action :create
-  provider "zw_jks_keystore"
 end
 
 template "/etc/sysconfig/jenkins" do

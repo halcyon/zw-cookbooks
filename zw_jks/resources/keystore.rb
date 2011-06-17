@@ -1,3 +1,8 @@
+def initialize(*args)
+    super
+    @action = :create
+end
+
 actions :create
 
 attribute :subject, :kind_of => String, :name_attribute => true
