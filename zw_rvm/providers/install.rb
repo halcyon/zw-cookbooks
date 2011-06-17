@@ -4,19 +4,18 @@ action :create do
       requrie 'rubygems'
       require 'rvm'
 
+      requested = new_resource.ruby_string
+
       current=RVM::Environment.current
-
       rvm_strings = current.list_strings()
-      puts "rvm_strings "
-      p rvm_strings
-
-      puts "to be installed: "
-      p requested.select { |request|
+      install = requested.select { |request|
         rvm_strings.select
         { |rvm|
           ! rvm.scan(request).empty?
         }.empty?
       }
+
+      log install
 
     end
     action :create
