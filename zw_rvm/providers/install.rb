@@ -4,19 +4,21 @@ action :create do
       require 'rubygems'
       require 'rvm'
 
-      requested = new_resource.ruby_string
+      ruby_string = new_resource.ruby_string
+      set_default = new_resource.set_default
+      gemset = new_resource.gemset
+
+      puts gemset.class
 
       current=RVM::Environment.current
       rvm_strings = current.list_strings()
-      install_strings = requested.select { |request|
-        rvm_strings.select { |rvm|
-          ! rvm.scan(request).empty?
-        }.empty?
-      }
 
-      install_strings.each() do |install|
+
+      if rvm_strings.select { |rvm_string| ! rvm_string.scan(ruby_string).empty? }.empty? then
         current.install(install)
       end
+
+      current.rvm :use, "#{ruby_string}@#{gemset}", :create => true, :default => set_default
 
     end
     action :create

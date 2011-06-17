@@ -7,4 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-zw_rvm_install "ruby-1.9.2"
+zw_rvm_install "ruby-1.9.2" do
+  set_default true
+  gemset "jenkins"
+end
