@@ -8,6 +8,5 @@
 #
 
 zw_rvm_install "ruby-1.9.2" do
-  set_default true
-  gemset "jenkins"
+  gemset "frank"
 end

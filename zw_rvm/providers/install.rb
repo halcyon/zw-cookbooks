@@ -5,7 +5,6 @@ action :create do
       require 'rvm'
 
       ruby_string = new_resource.ruby_string
-      set_default = new_resource.set_default
       gemset = new_resource.gemset
 
       puts gemset.class
@@ -18,7 +17,7 @@ action :create do
         current.install(install)
       end
 
-      current.rvm :use, "#{ruby_string}@#{gemset}", :create => true, :default => set_default
+      current.rvm :use, "#{ruby_string}@#{gemset}", :create => true
 
     end
     action :create
