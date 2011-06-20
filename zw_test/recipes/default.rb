@@ -8,5 +8,6 @@
 #
 
 zw_rvm_install "ruby-1.9.2" do
+  ruby_string "ruby-1.9.2"
   gemset "frank"
 end

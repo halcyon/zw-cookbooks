@@ -14,7 +14,7 @@ action :create do
 
 
       if rvm_strings.select { |rvm_string| ! rvm_string.scan(ruby_string).empty? }.empty? then
-        current.install(install)
+        current.install ruby_string
       end
 
       current.rvm :use, "#{ruby_string}@#{gemset}", :create => true
