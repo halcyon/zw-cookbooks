@@ -7,7 +7,15 @@
 # All rights reserved - Do Not Redistribute
 #
 
+directory "/george" do
+  owner "root"
+  group "root"
+  mode "0755"
+  action :create
+end
+
 zw_rvm_install "ruby-1.9.2" do
   ruby_string "ruby-1.9.2"
-  gemset "frank"
+  project_dir "/george"
+  gemset "george"
 end

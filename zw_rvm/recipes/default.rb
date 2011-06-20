@@ -6,5 +6,3 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-
-gem_package "rvm"
